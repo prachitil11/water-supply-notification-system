@@ -72,9 +72,14 @@ POST /admin/schedule - Schedule water supply
 PUT /admin/schedule/{id} - Update schedule
 DELETE /admin/schedule/{id} - Delete schedule
 
-Future Improvements
-Use Geolocation API for real-time user location during registration
-Add a frontend (React-based UI)
+## 📈 Future Improvements
 
-Author
-Prachiti Lokhande
+* Integrate a Geolocation API for real-time user location during registration.
+* Develop a user-friendly frontend (e.g., using React or Angular) to interact with the backend APIs.
+* Explore deploying to a cloud platform (AWS, Azure, GCP).
+
+---
+
+## 🤝 Author
+
+* **Prachiti Lokhande**
