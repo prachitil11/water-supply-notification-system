@@ -1,16 +1,11 @@
-# Compiled class file
+# Compiled class files
 *.class
 
-# Log file
+# Log files
 *.log
+logs/ # Ignore logs folder
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# Package Files (compiled artifacts)
 *.jar
 *.war
 *.nar
@@ -19,11 +14,32 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# JVM crash logs
 hs_err_pid*
 replay_pid*
 
-# Ignore sensitive application configuration files
-**/application*.properties
-**/application*.yml
-.env
+# Maven build directory
+/target/ # <-- ADD THIS LINE
+
+# Gradle build directory (if you use Gradle for any service)
+/build/
+.gradle/
+
+# IDE specific files
+.idea/      # IntelliJ IDEA project files
+*.iml       # IntelliJ IDEA module files
+*.ipr       # IntelliJ IDEA project files
+*.iws       # IntelliJ IDEA workspace files
+.vscode/    # VS Code files
+.project    # Eclipse project files
+.classpath  # Eclipse classpath files
+.settings/  # Eclipse settings folder
+
+# OS generated files
+.DS_Store    # macOS specific
+Thumbs.db    # Windows specific
+
+# Ignore sensitive application configuration files (these files are in src/main/resources but should NOT be committed)
+**/application*.properties  # Ignores files like application.properties, application-dev.properties etc.
+**/application*.yml         # Ignores files like application.yml, application-prod.yml etc.
+.env                        # If you use .env files for secrets
