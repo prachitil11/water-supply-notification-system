@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.watersupply.Notification.entity.Notification;
@@ -26,6 +27,9 @@ public class NotificationService{
 
     @Autowired
     private Feign.Builder feignBuilder;
+
+    @Value("${internal.service.token}")
+    private String internalToken;
 
     public void sendNotification(Notification notification)
     {
@@ -55,8 +59,8 @@ public class NotificationService{
         }
     }*/
 
-    public void sendNotificationByLocation(String locationId, String message,String token) {
-    List<Users> users = userService.getUserByLocation(locationId, "Bearer " + token);
+    public void sendNotificationByLocation(String locationId, String message) {
+    List<Users> users = userService.getUserByLocation(locationId, "Bearer " + internalToken);
     for (Users user : users) {
         Notification notification = new Notification();
         notification.setUserId(user.getId());

@@ -16,9 +16,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.jsonwebtoken.SignatureException;
+import org.springframework.beans.factory.annotation.Value;
 
 public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
+
+    @Value("${internal.service.token}")
+    private String internalServiceToken;
 
     public JWTFilter(JWTUtil jwtUtil)
     {
@@ -34,6 +38,15 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         token = token.substring(7).trim();
+
+        if (token.equals(internalServiceToken)) {
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                "internal-service", null, Collections.emptyList()
+            );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
             String email = jwtUtil.extractEmail(token);

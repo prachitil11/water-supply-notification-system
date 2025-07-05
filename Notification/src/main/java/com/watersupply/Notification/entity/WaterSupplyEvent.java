@@ -6,5 +6,5 @@ import lombok.Data;
 public class WaterSupplyEvent {
     private String locationId;
     private String message;
-    private String token;
+    //private String token;
 }

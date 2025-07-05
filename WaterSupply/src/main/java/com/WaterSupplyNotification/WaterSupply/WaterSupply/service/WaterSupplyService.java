@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.WaterSupplyNotification.WaterSupply.WaterSupply.entity.OutboxEvent;
 import com.WaterSupplyNotification.WaterSupply.WaterSupply.entity.SupplyStatus;
 import com.WaterSupplyNotification.WaterSupply.WaterSupply.entity.WaterSupplyEvent;
+import com.WaterSupplyNotification.WaterSupply.WaterSupply.repository.OutboxEventRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Service
@@ -26,7 +28,7 @@ public class WaterSupplyService {
     private WaterSupplyRepository waterSupplyRepository;
 
    @Autowired
-   private KafkaTemplate<String, WaterSupplyEvent> kafkaTemplate;
+   private OutboxEventRepository outboxEventRepository;
 
    public void scheduleSupply(WaterSupply supply,String token)
    {
@@ -38,10 +40,23 @@ public class WaterSupplyService {
 
      WaterSupplyEvent event= new WaterSupplyEvent();
      event.setLocationId(supply.getLocationId());
-     event.setMessage("Water supply schedule at " + formattedDateTime + "for " + supply.getDuration() + "hrs");
-     event.setToken(token);
+     event.setMessage("Water supply schedule at " + formattedDateTime + " for " + supply.getDuration() + "hrs");
+     //event.setToken(token);
 
-     kafkaTemplate.send("water-supply-topic",event);
+     ObjectMapper mapper = new ObjectMapper();
+        try {
+            String eventJson = mapper.writeValueAsString(event);
+            System.out.println("Payload being saved: " + eventJson);
+
+            OutboxEvent outboxEvent = new OutboxEvent();
+            outboxEvent.setEventType("WaterSupplyScheduled");
+            outboxEvent.setPayload(eventJson);
+            outboxEvent.setStatus("NEW");
+
+            outboxEventRepository.save(outboxEvent);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize WaterSupplyEvent", e);
+        }
    }
 
     public WaterSupplyService(WaterSupplyRepository waterSupplyRepository)
